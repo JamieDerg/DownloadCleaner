@@ -5,7 +5,7 @@ In order to use it, you need to create a settings.json File in the same folder t
 
 The structure is the following:
 
-```json
+```js
 {
   
   //the Path of the download folder
