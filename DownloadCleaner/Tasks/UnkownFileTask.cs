@@ -7,35 +7,31 @@ namespace DownloadCleaner.Tasks
 {
     public class UnknownFileTask : Task
     {
-        public UnknownFileTask()
-        {
-            taskName = "Unkown File Clean Task";
-        }
-        
+       
         
         public override void RunTask()
         {
-            logger.Information(Prefix+"scanning Files...");
-            var unkownFilePath = Path.Combine(settings.downloadPath, settings.unknownExtensionFolderName);
+            Information("scanning Files...");
+            var unknownFilePath = Path.Combine(settings.downloadPath, settings.unknownExtensionFolderName);
 
-            if (!Directory.Exists(unkownFilePath))
+            if (!Directory.Exists(unknownFilePath))
             {
-                logger.Information(Prefix+"No process needed");
+                Information("No process needed");
                 return;
             }
             
             var fileTypeHelper = new FileTypeHelper();
             
-            var files = Directory.GetFiles(unkownFilePath).Where(file => fileTypeHelper.fileHasEntry(file)).ToArray() ;
+            var files = Directory.GetFiles(unknownFilePath).Where(file => fileTypeHelper.fileHasEntry(file)).ToArray() ;
 
             if (files.Length == 0)
             {
-                logger.Information(Prefix+"No process needed");
+                Information("No process needed");
                 return;
             }
             
-            logger.Information(Prefix+"Found {fileCount} files that have a known extension", files.Length);
-            logger.Information(Prefix+"Moving files to Download folder");
+            Information("Found {fileCount} files that have a known extension", files.Length);
+            Information("Moving files to Download folder");
 
             var extensionsToRemove = new List<string>();
             
@@ -51,8 +47,13 @@ namespace DownloadCleaner.Tasks
                 }
                 File.Move(file, movePath);
             }
-            logger.Information(Prefix+"Files Moved");
+            Information("Files Moved");
             fileTypeHelper.RemoveUnkownExtensions(extensionsToRemove);
+        }
+
+        public override string GetTaskName()
+        {
+            return "Unkown File Clean Task";
         }
     }
 }

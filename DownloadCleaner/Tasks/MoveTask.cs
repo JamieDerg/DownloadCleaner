@@ -19,7 +19,6 @@ namespace DownloadCleaner.Tasks
         {
             fileTypeHelper = new FileTypeHelper();
             unkownFileTypes = new List<string>();
-            taskName = "Move Task";
         }
         public override void RunTask()
         {
@@ -27,14 +26,14 @@ namespace DownloadCleaner.Tasks
             var downloadPath = settings.downloadPath;
             var excludedFolders = fileTypeHelper.GetAllFileTypePaths();
             
-            logger.Information(Prefix+"scanning Files...");
+            Information("scanning Files...");
             
             var files = Directory.GetFiles(downloadPath , "*.*", SearchOption.AllDirectories)
                             .Where(d => excludedFolders.All(e => !d.StartsWith(e))).ToArray();
 
             if (files.Length == 0)
             {
-                logger.Information(Prefix+"No process needed");
+                Information("No process needed");
                 return;
             }
             
@@ -54,16 +53,21 @@ namespace DownloadCleaner.Tasks
             unkownFileTypes.Clear();
         }
 
+        public override string GetTaskName()
+        {
+            return "Move Task";
+        }
+
         private void MoveKnownFile(String file)
         {
-            logger.Information(Prefix+"Moving file: {fileName}", file);
+            Information("Moving file: {fileName}", file);
             var movePath = fileTypeHelper.GetMoveFilePath(file);
             MoveFile(file, movePath);
         }
         
         private void MoveUnknownFile(String file)
         {
-            logger.Information(Prefix+"Moving file with unknown extension: {fileName}", file);
+            Information("Moving file with unknown extension: {fileName}", file);
             var fileName = Path.GetFileName(file);
             var extension = Path.GetExtension(file);
             var movePath = Path.Join(settings.downloadPath,
@@ -76,9 +80,15 @@ namespace DownloadCleaner.Tasks
         private void MoveFile(String file, String movePath)
         {
             new System.IO.FileInfo(movePath).Directory?.Create();
-            
-            File.Move(file, movePath,true);
-            logger.Information(Prefix+"File has succesfully been moved. New Path: {movePath}", movePath);
+            try
+            {
+                File.Move(file, movePath, true);
+            }
+            catch (Exception e)
+            {
+                Error("The file: {file} could not be moved: {error}",file,e.Message);
+            }
+            Information("File has successfully been moved. New Path: {movePath}", movePath);
         }
         bool ShouldMoveFile(string file)
         {

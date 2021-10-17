@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 
 
@@ -16,7 +17,7 @@ namespace DownloadCleaner.Tasks
       
 
         private List<Task> tasks;
-        private Settings settings;
+
         private Serilog.Core.Logger logger;
         private bool shouldStop = false;
         private BackgroundWorker bg;
@@ -24,7 +25,6 @@ namespace DownloadCleaner.Tasks
         public TaskRunner()
         {
             bg = new BackgroundWorker();
-            settings = Settings.GetInstance();
             logger = Logger.getInstance();
             resetEvent = new ManualResetEvent(false);
             tasks = new List<Task>();
@@ -38,7 +38,6 @@ namespace DownloadCleaner.Tasks
               
                while (!shouldStop)
                {
-                   var waitTill = DateTime.Now.AddMilliseconds(COOLDOWN);
                    RunTasks();
                    resetEvent.WaitOne(COOLDOWN);
                }
@@ -49,6 +48,7 @@ namespace DownloadCleaner.Tasks
                if (args.Error != null)
                {
                    logger.Fatal("An exception occurded: {message} \n {stacktrace}",args.Error.Message,args.Error.StackTrace);
+                   Process.GetCurrentProcess().Kill();
                }
                
                logger.Information("Background Thread Stopped");
@@ -62,7 +62,7 @@ namespace DownloadCleaner.Tasks
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 
-                logger.Information("running Task: [{taskName}]", task.taskName);
+                logger.Information("running Task: [{taskName}]", task.GetTaskName());
                 task.RunTask();
                 
                 watch.Stop();
@@ -75,7 +75,7 @@ namespace DownloadCleaner.Tasks
         }
         public void addTask(Task task)
         {
-            logger.Information("added Task: [{taskName}]",task.taskName);
+            logger.Information("added Task: [{taskName}]",task.GetTaskName());
             tasks.Add(task);
         }
 

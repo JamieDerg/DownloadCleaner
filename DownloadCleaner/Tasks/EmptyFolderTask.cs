@@ -5,11 +5,6 @@ namespace DownloadCleaner.Tasks
 {
     public class EmptyFolderTask : Task
     {
-
-        public EmptyFolderTask()
-        {
-            taskName = "Empty folder Task";
-        }
         public override void RunTask()
         {
             var emptyFolders = Directory.EnumerateDirectories(Settings.GetInstance().downloadPath)
@@ -28,6 +23,11 @@ namespace DownloadCleaner.Tasks
              
             }
             logger.Information(Prefix+"Deletion complete",emptyFolders.Length);
+        }
+
+        public override string GetTaskName()
+        {
+            return "Empty folder Task";
         }
     }
 }

@@ -9,15 +9,15 @@ namespace DownloadCleaner
 
     public class Settings
     {
-        private const string JSON_PATH = "settings.json";
+        public const string JSON_PATH = "settings.json";
 
-        public readonly string downloadPath;
+        public  string downloadPath;
 
-        public readonly int minimumMoveTime;
+        public  int minimumMoveTime;
 
-        public readonly List<FileType.FileType> fileTypes;
+        public  List<FileType.FileType> fileTypes;
 
-        public readonly string unknownExtensionFolderName;
+        public  string unknownExtensionFolderName;
         
         private static Settings instance;
 
@@ -28,8 +28,12 @@ namespace DownloadCleaner
         
         private Settings()
         {
-            var logger = Logger.getInstance();
+            LoadSettings();
+        }
 
+        private void LoadSettings()
+        {
+            var logger = Logger.getInstance();
             try
             {
                 var wrapper = JsonConvert.DeserializeObject<Wrapper>(File.ReadAllText(JSON_PATH));
@@ -78,13 +82,12 @@ namespace DownloadCleaner
                 throw new NullReferenceException("The attribute \"MinimumMoveTime\" is not set or 0");
             }
         }
-        
-       
-        
-        
 
 
-
+        public void Reload()
+        {
+            LoadSettings();
+        }
     }
 
     internal class Wrapper

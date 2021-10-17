@@ -9,6 +9,7 @@ namespace DownloadCleaner
         public void Start()
         {
             taskRunner = new TaskRunner();
+            taskRunner.addTask(new SettingsReloadTask());
             taskRunner.addTask(new MoveTask());
             taskRunner.addTask(new EmptyFolderTask());
             taskRunner.addTask(new UnknownFileTask());
