@@ -18,6 +18,7 @@ namespace DownloadCleaner.Tasks
             if (currentChangedDate != lastChangedDate)
             {
                 Information("reloading settings...");
+                lastChangedDate = File.GetLastWriteTime(Settings.JSON_PATH);
                 settings.Reload();
                 Information("done!");
                 return;

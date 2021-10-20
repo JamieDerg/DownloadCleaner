@@ -2,10 +2,10 @@
 
 namespace DownloadCleaner
 {
-    class Program
+    internal static class Program
     {
         
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
 
             HostFactory.Run(x =>
@@ -20,10 +20,10 @@ namespace DownloadCleaner
                 x.RunAsLocalSystem();
                 x.SetDescription("Service that cleans your download folder");
                 x.SetDisplayName("Download Cleaner Service");
-                x.SetServiceName("DovnloadCleaner");
+                x.SetServiceName("DownloadCleaner");
                 x.OnException(exception =>
                 {
-                    Logger.getInstance().Fatal("{message} \n {stacktrace}",exception.Message,exception.StackTrace);
+                    Logger.GetInstance().Fatal("{message} \n {stacktrace}",exception.Message,exception.StackTrace);
                 });
             });
 

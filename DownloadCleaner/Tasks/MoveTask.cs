@@ -12,13 +12,13 @@ namespace DownloadCleaner.Tasks
         
         private readonly FileTypeHelper fileTypeHelper;
 
-        private readonly List<string> unkownFileTypes;
+        private readonly List<string> unknownFileTypes;
 
        
         public MoveTask()
         {
             fileTypeHelper = new FileTypeHelper();
-            unkownFileTypes = new List<string>();
+            unknownFileTypes = new List<string>();
         }
         public override void RunTask()
         {
@@ -31,7 +31,7 @@ namespace DownloadCleaner.Tasks
             var files = Directory.GetFiles(downloadPath , "*.*", SearchOption.AllDirectories)
                             .Where(d => excludedFolders.All(e => !d.StartsWith(e))).ToArray();
 
-            if (files.Length == 0)
+            if (files.Length is 0)
             {
                 Information("No process needed");
                 return;
@@ -39,9 +39,10 @@ namespace DownloadCleaner.Tasks
             
             foreach (var file in files)
             {
-                if(file.StartsWith(Path.Combine(settings.downloadPath,
-                    settings.unknownExtensionFolderName)))
-                    continue;
+                if(file.StartsWith(
+                    Path.Combine(settings.downloadPath,
+                    settings.unknownExtensionFolderName)))  continue;
+                   
 
                 if (ShouldMoveFile(file))
                 {
@@ -49,8 +50,8 @@ namespace DownloadCleaner.Tasks
                 }
             }
             
-            fileTypeHelper.AddUnknownExtensions(unkownFileTypes);
-            unkownFileTypes.Clear();
+            fileTypeHelper.AddUnknownExtensions(unknownFileTypes);
+            unknownFileTypes.Clear();
         }
 
         public override string GetTaskName()
@@ -58,14 +59,14 @@ namespace DownloadCleaner.Tasks
             return "Move Task";
         }
 
-        private void MoveKnownFile(String file)
+        private void MoveKnownFile(string file)
         {
             Information("Moving file: {fileName}", file);
             var movePath = fileTypeHelper.GetMoveFilePath(file);
             MoveFile(file, movePath);
         }
         
-        private void MoveUnknownFile(String file)
+        private void MoveUnknownFile(string file)
         {
             Information("Moving file with unknown extension: {fileName}", file);
             var fileName = Path.GetFileName(file);
@@ -73,13 +74,13 @@ namespace DownloadCleaner.Tasks
             var movePath = Path.Join(settings.downloadPath,
                 settings.unknownExtensionFolderName,
                 fileName);
-            unkownFileTypes.Add(extension);
+            unknownFileTypes.Add(extension);
             MoveFile(file,movePath);
         }
 
-        private void MoveFile(String file, String movePath)
+        private void MoveFile(string file, string movePath)
         {
-            new System.IO.FileInfo(movePath).Directory?.Create();
+            new FileInfo(movePath).Directory?.Create();
             try
             {
                 File.Move(file, movePath, true);
@@ -104,15 +105,13 @@ namespace DownloadCleaner.Tasks
 
          
             
-            bool removeTimeReached = lastUpdatedTime < DateTime.Now;
+            var removeTimeReached = lastUpdatedTime < DateTime.Now;
 
-            if (removeTimeReached && !fileTypeHelper.fileHasEntry(file))
-            {
-                MoveUnknownFile(file);
-                return false;
-            }
+            if (!removeTimeReached || fileTypeHelper.FileHasEntry(file)) return removeTimeReached;
             
-            return removeTimeReached;
+            MoveUnknownFile(file);
+            return false;
+
         }
     }
 }

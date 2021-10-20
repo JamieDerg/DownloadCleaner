@@ -12,17 +12,17 @@ namespace DownloadCleaner.Tasks
 
             if (emptyFolders.Length is 0)
             {
-                logger.Information(Prefix+"No process needed");
+                Information("no process needed");
                 return;
             }
             
-            logger.Information(Prefix+"found {folderCount} empty folders. Deleting....",emptyFolders.Length);
+            Information("found {folderCount} empty folders. Deleting....",emptyFolders.Length);
             foreach (var folder in emptyFolders)
             {
                Directory.Delete(folder,true);
              
             }
-            logger.Information(Prefix+"Deletion complete",emptyFolders.Length);
+            Information("Deletion complete",emptyFolders.Length);
         }
 
         public override string GetTaskName()

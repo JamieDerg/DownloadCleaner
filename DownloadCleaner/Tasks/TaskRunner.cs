@@ -16,16 +16,16 @@ namespace DownloadCleaner.Tasks
         #endif
       
 
-        private List<Task> tasks;
+        private readonly List<Task> tasks;
 
-        private Serilog.Core.Logger logger;
+        private readonly Serilog.Core.Logger logger;
         private bool shouldStop = false;
         private BackgroundWorker bg;
-        private ManualResetEvent resetEvent;
+        private readonly ManualResetEvent resetEvent;
         public TaskRunner()
         {
             bg = new BackgroundWorker();
-            logger = Logger.getInstance();
+            logger = Logger.GetInstance();
             resetEvent = new ManualResetEvent(false);
             tasks = new List<Task>();
         }
@@ -80,9 +80,10 @@ namespace DownloadCleaner.Tasks
         }
 
         public void Stop()
-        { logger.Information("Shutting down");
-           shouldStop = true;
-           resetEvent.Set();
+        { 
+            logger.Information("Shutting down");
+            shouldStop = true;
+            resetEvent.Set();
         }
         
     }

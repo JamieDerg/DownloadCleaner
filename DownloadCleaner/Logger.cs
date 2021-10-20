@@ -2,16 +2,11 @@
 
 namespace DownloadCleaner
 {
-    public class Logger 
+    public static class Logger 
     {
         private static Serilog.Core.Logger instance;
-
-        private Logger()
-        {
-            
-        }
-
-        public static Serilog.Core.Logger getInstance()
+        
+        public static Serilog.Core.Logger GetInstance()
         {
             return instance ??= new LoggerConfiguration()
                 .WriteTo.Console()

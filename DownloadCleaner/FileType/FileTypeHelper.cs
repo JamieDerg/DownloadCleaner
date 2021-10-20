@@ -7,9 +7,9 @@ namespace DownloadCleaner.FileType
 {
     public class FileTypeHelper
     {
-        private Settings settings;
+        private readonly Settings settings;
 
-        private const string UNKOWN_EXTENSION_PATH = "unkownExtensions.json";
+        private const string UNKNOWN_EXTENSION_PATH = "unkownExtensions.json";
         
         public FileTypeHelper()
         {
@@ -25,7 +25,7 @@ namespace DownloadCleaner.FileType
             return strings.ToArray();
         }
 
-        public bool fileHasEntry(string file)
+        public bool FileHasEntry(string file)
         {
             var extension = Path.GetExtension(file);
 
@@ -64,7 +64,7 @@ namespace DownloadCleaner.FileType
         public void AddUnknownExtensions(List<string> unknownExtensions)
         {
             createUnkownExtensionsFile();
-            List<string> existingUnknownExtensions = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(UNKOWN_EXTENSION_PATH));
+            List<string> existingUnknownExtensions = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(UNKNOWN_EXTENSION_PATH));
             
             
             foreach (var extension in unknownExtensions)
@@ -76,26 +76,26 @@ namespace DownloadCleaner.FileType
             }
             
             string json = JsonConvert.SerializeObject(existingUnknownExtensions, Formatting.Indented);
-            File.WriteAllText(UNKOWN_EXTENSION_PATH, json);
+            File.WriteAllText(UNKNOWN_EXTENSION_PATH, json);
             
         }
 
         public void RemoveUnkownExtensions(List<string> unknownExtensions)
         {
             createUnkownExtensionsFile();
-            List<string> existingUnknownExtensions = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(UNKOWN_EXTENSION_PATH));
+            List<string> existingUnknownExtensions = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(UNKNOWN_EXTENSION_PATH));
             
             existingUnknownExtensions?.RemoveAll(extension => unknownExtensions.Any(e => e == extension));
             
             string json = JsonConvert.SerializeObject(existingUnknownExtensions, Formatting.Indented);
-            File.WriteAllText(UNKOWN_EXTENSION_PATH, json);
+            File.WriteAllText(UNKNOWN_EXTENSION_PATH, json);
         }
 
         private void createUnkownExtensionsFile()
         {
-            if (!File.Exists(UNKOWN_EXTENSION_PATH))
+            if (!File.Exists(UNKNOWN_EXTENSION_PATH))
             {
-                File.WriteAllText(UNKOWN_EXTENSION_PATH,"[]");
+                File.WriteAllText(UNKNOWN_EXTENSION_PATH,"[]");
             }
         }
     }

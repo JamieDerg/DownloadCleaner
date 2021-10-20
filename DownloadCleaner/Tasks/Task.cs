@@ -28,7 +28,7 @@ namespace DownloadCleaner.Tasks
         protected Task()
         {
             settings = Settings.GetInstance();
-            logger = Logger.getInstance();
+            logger = Logger.GetInstance();
         }
         
         

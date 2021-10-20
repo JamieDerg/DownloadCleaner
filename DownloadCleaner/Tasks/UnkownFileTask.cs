@@ -22,9 +22,9 @@ namespace DownloadCleaner.Tasks
             
             var fileTypeHelper = new FileTypeHelper();
             
-            var files = Directory.GetFiles(unknownFilePath).Where(file => fileTypeHelper.fileHasEntry(file)).ToArray() ;
+            var files = Directory.GetFiles(unknownFilePath).Where(file => fileTypeHelper.FileHasEntry(file)).ToArray() ;
 
-            if (files.Length == 0)
+            if (files.Length is 0)
             {
                 Information("No process needed");
                 return;
@@ -53,7 +53,7 @@ namespace DownloadCleaner.Tasks
 
         public override string GetTaskName()
         {
-            return "Unkown File Clean Task";
+            return "Unknown File Clean Task";
         }
     }
 }

@@ -33,10 +33,12 @@ namespace DownloadCleaner
 
         private void LoadSettings()
         {
-            var logger = Logger.getInstance();
+            var logger = Logger.GetInstance();
             try
             {
-                var wrapper = JsonConvert.DeserializeObject<Wrapper>(File.ReadAllText(JSON_PATH));
+                var settings = new JsonSerializerSettings();
+                settings.NullValueHandling = NullValueHandling.Ignore;
+                var wrapper = JsonConvert.DeserializeObject<Wrapper>(File.ReadAllText(JSON_PATH),settings);
 
                 CheckForErrors(wrapper);
 
@@ -89,7 +91,9 @@ namespace DownloadCleaner
             LoadSettings();
         }
     }
-
+    
+    //Values get set by Deserializer
+    #pragma warning disable 0649
     internal class Wrapper
     {
         [JsonProperty]
@@ -105,6 +109,6 @@ namespace DownloadCleaner
         public string unknownExtensionFolderName;
 
     }
-    
+    #pragma warning restore 0649
     
 }
